@@ -3,6 +3,7 @@
 - Custom bot
 - Opleiding, klas, groep & leraren roles
 - Werk, chill channels
+- Inloggen met school email, met formulier
 
 ## Opleidingen
 

@@ -1,5 +1,17 @@
 # Windesheim Discord
 
+## T.L.D.R.
+
+Discord server voor het hele Windesheim. Wanneer je de server joined word je gevraagd om wat informatie in te vullen. Hier wordt geverifieerd of je echt een student/docent bent op het Windesheim. Wanneer je deze informatie hebt ingevuld krijg je verschillende roles in de server die jou afbakenen met jouw gekozen opleiding.
+
+De bedoeling is dat je in deze server makkelijk hulp kan vragen aan iedereen waaronder docenten en waar je ook met je groepje in een privé kanaal kan zitten.
+
+Je kan bijvoorbeeld bij de bot informatie opvragen over je studiekeuze en andere dingen.
+
+De server is ook een plek waar je nieuwsberichten of soortgelijke dingen die van het Windesheim zelf komen, kan inzien.
+
+## Features
+
 - Custom bot
 - Opleiding, klas, groep & leraren roles
 - Werk, chill channels

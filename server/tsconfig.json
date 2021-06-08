@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "lib": ["esnext", "esnext.array"],
+    "lib": ["esnext", "esnext.array", "DOM"],
     "target": "ES2015",
     "sourceMap": true,
     "outDir": "./dist",

@@ -1,9 +1,6 @@
-import { Router } from "express";
-import { URLSearchParams } from "url";
-import fetch from "node-fetch";
-import User from "../schemas/User";
-
-const router = Router();
+import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
+import connect from "../../middleware/mongo";
+import User from "../../models/User";
 
 const API_ENDPOINT = "https://discord.com/api/v8";
 
@@ -26,7 +23,8 @@ export interface UserResponse {
   mfa_enabled: boolean;
 }
 
-router.get("/", async (req, res) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+  const state = req.body;
   try {
     if (!req.query.code) {
       // @ts-ignore
@@ -35,9 +33,10 @@ router.get("/", async (req, res) => {
         redirect_uri: process.env.CALLBACK_URL,
         response_type: "code",
         scope: ["identify", "guilds", "guilds.join"].join(" "),
-        state: req.query.state,
+        state: JSON.stringify(state),
       });
       const url = `${API_ENDPOINT}/oauth2/authorize?${params}`;
+      console.log("REDIRECTING TO DISCORD");
       return res.redirect(url);
     }
     const response = await fetch(`${API_ENDPOINT}/oauth2/token`, {
@@ -52,11 +51,11 @@ router.get("/", async (req, res) => {
         grant_type: "authorization_code",
         code: req.query.code,
         redirect_uri: process.env.CALLBACK_URL,
-        state: req.query.state,
+        state: JSON.stringify(state),
       }),
     });
+    console.log("GETTING TOKEN");
     const data: AuthResponse = await response.json();
-    res.cookie("key", data.access_token, { maxAge: 2592000000 });
 
     const userResponse = await fetch(`${API_ENDPOINT}/users/@me`, {
       headers: {
@@ -64,7 +63,6 @@ router.get("/", async (req, res) => {
       },
     });
     const user: UserResponse = await userResponse.json();
-    const state = JSON.parse(req.query.state?.toString()!);
 
     if (user) {
       const studentnummer = state.email.split("@")[0];
@@ -84,11 +82,13 @@ router.get("/", async (req, res) => {
           nickname,
           firstname: state.firstname,
           lastname: state.lastname,
+          verified: false,
         },
         {
           upsert: true,
         }
       );
+      console.log("CREATING USER");
 
       await fetch(`${API_ENDPOINT}/guilds/850653163379884033/members/${user.id}`, {
         method: "PATCH",
@@ -103,63 +103,13 @@ router.get("/", async (req, res) => {
         }),
       }).then(res => res.json());
 
+      console.log("ADDING USER");
       return res.json({ ...data, user: newUser });
     }
     return res.status(500).json({ message: "Error" });
   } catch (error) {
     console.error(error);
   }
-});
+};
 
-router.post("/", async (req, res) => {
-  try {
-    const params = new URLSearchParams({
-      state: JSON.stringify(req.body),
-    });
-
-    res.redirect(`/api/auth?${params}`);
-  } catch (error) {}
-});
-
-router.get("/user", async (req, res) => {
-  try {
-    const user: UserResponse = await fetch(`${API_ENDPOINT}/users/@me`, {
-      headers: {
-        Authorization: `Bearer ${req.cookies.get("key")}`,
-      },
-    }).then(res => res.json());
-
-    // const roles = await fetch(`${API_ENDPOINT}/guilds/850653163379884033/members/${user.id}`, {
-    //   method: "PUT",
-    //   headers: {
-    //     Authorization: `Bot ${process.env.BOT_TOKEN}`,
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify({
-    //     access_token: req.cookies.get("key"),
-    //     roles: ["851392898317418527"],
-    //     nick: "",
-    //   }),
-    // }).then(res => res.json());
-
-    return res.json({ user, state: req.body.state });
-  } catch (error) {
-    console.error(error);
-    return res.json(error);
-  }
-});
-
-router.get("/guilds", async (req, res) => {
-  try {
-    const guilds = await fetch(`${API_ENDPOINT}/users/@me/guilds`, {
-      headers: {
-        Authorization: `Bearer ${req.cookies.get("key")}`,
-      },
-    }).then(res => res.json());
-    return res.json(guilds);
-  } catch (error) {
-    console.error(error);
-  }
-});
-
-export default router;
+export default connect(handler);

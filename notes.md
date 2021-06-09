@@ -17,12 +17,15 @@ De server is ook een plek waar je nieuwsberichten of soortgelijke dingen die van
 - Werk, chill channels
 - Inloggen met school email, met formulier
 
+https://classcord.me/commands
+https://github.com/AnIdiotsGuide/discordjs-bot-guide/blob/master/coding-guides/tracking-used-invites.md
+
 ## Opleidingen
 
 [Endpoint](https://www.windesheim.nl/opleidingoverviewpage/json?showAll=true)
 
 ```javascript
-fetch("https://www.windesheim.nl/opleidingoverviewpage/json?showAll=true")
+fetch("https://cors-anywhere.herokuapp.com/https://www.windesheim.nl/opleidingoverviewpage/json?showAll=true")
   .then(res => res.json())
   .then(data => {
     const opleidingen = data.items

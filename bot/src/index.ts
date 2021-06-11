@@ -28,3 +28,7 @@ client.logger = consola;
     client.logger.error(error);
   }
 })();
+
+process.on("unhandledRejection", error => {
+  client.logger.error("Unhandled promise rejection:", error);
+});

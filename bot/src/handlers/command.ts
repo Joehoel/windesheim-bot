@@ -54,8 +54,7 @@ export default async (client: Client, message: Message) => {
 
   // If all check have passed, execute command
   try {
-    command.execute(client, message, args);
-    return;
+    return command.execute(client, message, args);
   } catch (error) {
     client.logger.error(error);
     await message.reply("There was an error trying to execute that command!");

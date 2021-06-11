@@ -1,16 +1,18 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { getCsrfToken, signIn, useSession } from "next-auth/client";
+import { getCsrfToken, useSession } from "next-auth/client";
 import { useRouter } from "next/dist/client/router";
-import { useRef } from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import Layout from "../components/Layout";
-import Spinner from "react-spinkit";
 
 type FormData = {
   firstname: string;
   lastname: string;
   opleiding: string;
+};
+
+type EmailData = {
+  email: string;
 };
 
 const schema = yup.object().shape({
@@ -19,16 +21,33 @@ const schema = yup.object().shape({
   opleiding: yup.string().required(),
 });
 
+const emailSchema = yup.object().shape({
+  email: yup
+    .string()
+    .email()
+    .matches(/windesheim.nl$/gi)
+    .required()
+    .trim(),
+});
+
 const IndexPage = ({ csrfToken }) => {
   const router = useRouter();
   const [session, loading] = useSession();
-  console.log(session);
+  console.log({ session });
   const {
     handleSubmit,
     register,
     formState: { errors },
   } = useForm<FormData>({
     resolver: yupResolver(schema),
+  });
+  const {
+    register: registerEmail,
+    formState: { errors: emailErrors },
+    getValues,
+  } = useForm<EmailData>({
+    mode: "onChange",
+    resolver: yupResolver(emailSchema),
   });
   const onSubmit = handleSubmit(async data => {
     // const auth = await fetch(`/api/auth?code=${code}`).then(res => res.json());
@@ -64,12 +83,17 @@ const IndexPage = ({ csrfToken }) => {
                 id="email"
                 required={true}
                 autoComplete="email"
+                {...registerEmail("email")}
               />
+              <span className="font-semibold text-sm text-red-600">
+                {emailErrors.email && "Email domain must contain 'windesheim.nl'"}
+              </span>
             </div>
-            <div className="flex w-full">
+            <div className="flex">
               <button
-                className="ml-auto justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-yellow-400 hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-400"
+                className="disabled:opacity-50 disabled:cursor-not-allowed ml-auto justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-yellow-400 hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-400"
                 type="submit"
+                disabled={emailErrors.email || getValues().email === "" ? true : false}
               >
                 Verify
               </button>

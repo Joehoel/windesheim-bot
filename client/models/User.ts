@@ -16,6 +16,7 @@ const UserSchema = new Schema<IUser>({
   id: {
     type: String,
     required: true,
+    unique: true,
   },
   email: {
     type: String,
@@ -28,6 +29,7 @@ const UserSchema = new Schema<IUser>({
   studentnummer: {
     type: String,
     required: true,
+    unique: true,
   },
   nickname: {
     type: String,

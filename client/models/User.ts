@@ -1,16 +1,22 @@
 import mongoose, { Document, model, Schema } from "mongoose";
 
-interface User extends Document {
+export interface IUser extends Document {
+  id: string;
   email: string;
   opleiding: string;
   studentnummer: string;
   nickname: string;
   firstname: string;
   lastname: string;
-  verified: boolean;
+  docent: boolean;
+  // verified: boolean;
 }
 
-const UserSchema = new Schema<User>({
+const UserSchema = new Schema<IUser>({
+  id: {
+    type: String,
+    required: true,
+  },
   email: {
     type: String,
     required: true,
@@ -35,10 +41,14 @@ const UserSchema = new Schema<User>({
     type: String,
     required: true,
   },
-  verified: {
+  docent: {
     type: Boolean,
     required: true,
   },
+  // verified: {
+  //   type: Boolean,
+  //   required: true,
+  // },
 });
 
-export default mongoose.models.User || model<User>("User", UserSchema);
+export default mongoose.models.User || model<IUser>("User", UserSchema);

@@ -13,13 +13,9 @@ const Layout = ({ children, title = "This is the default title" }: Props) => (
       <meta charSet="utf-8" />
       <meta name="viewport" content="initial-scale=1.0, width=device-width" />
     </Head>
-    <header>
-      <p>Header</p>
-    </header>
-    {children}
-    <footer>
-      <p>Footer</p>
-    </footer>
+    <header></header>
+    <main className="max-w-screen-md mx-auto px-4">{children}</main>
+    <footer></footer>
   </div>
 );
 

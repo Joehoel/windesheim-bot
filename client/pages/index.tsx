@@ -1,7 +1,9 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { getCsrfToken, useSession } from "next-auth/client";
 import { useRouter } from "next/dist/client/router";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 import * as yup from "yup";
 import Layout from "../components/Layout";
 
@@ -33,7 +35,7 @@ const emailSchema = yup.object().shape({
 const IndexPage = ({ csrfToken }) => {
   const router = useRouter();
   const [session, loading] = useSession();
-  console.log({ session });
+
   const {
     handleSubmit,
     register,
@@ -62,16 +64,29 @@ const IndexPage = ({ csrfToken }) => {
     });
     router.push(`https://discord.com/api/oauth2/authorize?${params}`);
   });
+  useEffect(() => {
+    if (router.query.callbackUrl) {
+      toast.success("✉ Email sent!", {
+        position: "top-right",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  }, []);
 
   if (loading) return "Loading...";
 
   if (!session)
     return (
-      <Layout>
+      <Layout title="Verifieer email">
         <section className="flex justify-center items-center h-screen">
           <form action="/api/auth/signin/email" method="POST" className="w-2/3 space-y-2">
             <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
-            <h1 className="font-bold text-3xl text-gray-700 mb-4">Verify Email</h1>
+            <h1 className="font-bold text-3xl text-gray-700 mb-4">Verifieer email</h1>
             <div>
               <label className="block text-sm font-medium text-gray-700" htmlFor="email">
                 Email
@@ -83,6 +98,7 @@ const IndexPage = ({ csrfToken }) => {
                 id="email"
                 required={true}
                 autoComplete="email"
+                placeholder="s1234567@student.windesheim.nl"
                 {...registerEmail("email")}
               />
               <span className="font-semibold text-sm text-red-600">
@@ -95,7 +111,7 @@ const IndexPage = ({ csrfToken }) => {
                 type="submit"
                 disabled={emailErrors.email || getValues().email === "" ? true : false}
               >
-                Verify
+                Verifieer
               </button>
             </div>
           </form>
@@ -119,6 +135,7 @@ const IndexPage = ({ csrfToken }) => {
               name="firstname"
               id="firstname"
               autoComplete="given-name"
+              placeholder="Jan"
               {...register("firstname")}
             />
             <span>{errors.firstname?.message}</span>
@@ -133,6 +150,7 @@ const IndexPage = ({ csrfToken }) => {
               name="lastname"
               id="lastname"
               autoComplete="family-name"
+              placeholder="de Boer"
               {...register("lastname")}
             />
             <span>{errors.lastname?.message}</span>
@@ -179,7 +197,7 @@ const IndexPage = ({ csrfToken }) => {
               className="ml-auto justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-yellow-400 hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-400"
               type="submit"
             >
-              Submit
+              Indienen
             </button>
           </div>
         </form>

@@ -10,5 +10,6 @@ module.exports = {
     EMAIL_SERVER_HOST: process.env.EMAIL_SERVER_HOST,
     EMAIL_SERVER_PORT: process.env.EMAIL_SERVER_PORT,
     EMAIL_FROM: process.env.EMAIL_FROM,
+    NEXTAUTH_URL: process.env.NEXTAUTH_URL,
   },
 };

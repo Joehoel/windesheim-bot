@@ -3,7 +3,7 @@ import connect from "../../middleware/mongo";
 import User from "../../models/User";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const id = req.query.id as string;
+  const id = req.params.id as string;
 
   const { nickname } = await User.findOne({
     id,

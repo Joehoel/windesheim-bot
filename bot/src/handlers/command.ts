@@ -10,8 +10,8 @@ export default async (client: Client, message: Message) => {
   const args = message.content.slice(prefix.length).trim().split(/ +/);
   const commandName = args.shift()!.toLowerCase();
 
-  // Check if the message is just '.'
-  if (commandName === ".") return;
+  // Check if the message is just the prefix
+  if (commandName === prefix) return;
 
   // Check if command exists
   if (!client.commands.has(commandName) && !client.aliases.has(commandName)) {
@@ -21,6 +21,13 @@ export default async (client: Client, message: Message) => {
 
   // Get command from collection
   const command = client.commands.get(commandName)! || client.commands.get(client.aliases.get(commandName)!);
+
+  if (command.channels?.length! > 0 && !command.channels?.includes(message.channel.id)) {
+    const msg = await message.channel.send(`Sorry, ${message.author}! You can't use that command here.`);
+    await message.delete({ timeout: 10 * 1000 });
+    await msg.delete({ timeout: 10 });
+    return;
+  }
 
   // Check if user is admin for command
   if (command.admin && !message.member!.hasPermission("ADMINISTRATOR")) {

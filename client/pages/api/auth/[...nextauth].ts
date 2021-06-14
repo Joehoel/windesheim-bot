@@ -5,6 +5,7 @@ export default NextAuth({
   pages: {
     signIn: "/",
     error: "/error",
+    newUser: "/",
   },
   providers: [
     Providers.Email({

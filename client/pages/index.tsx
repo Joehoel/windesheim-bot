@@ -1,11 +1,12 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { getCsrfToken, useSession } from "next-auth/client";
 import { useRouter } from "next/dist/client/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as yup from "yup";
 import Layout from "../components/Layout";
+import Spinner from "../components/Spinner";
 
 type FormData = {
   firstname: string;
@@ -78,7 +79,7 @@ const IndexPage = ({ csrfToken }) => {
     }
   }, []);
 
-  if (loading) return "Loading...";
+  if (loading) return <Spinner />;
 
   if (!session)
     return (

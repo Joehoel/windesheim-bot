@@ -1,5 +1,6 @@
 import { MessageEmbed } from "discord.js";
 import Command from "../lib/Command";
+import { color } from "../../config.json";
 
 const options = [
   "🇦",
@@ -62,7 +63,7 @@ export default new Command({
       return message.channel
         .send(
           new MessageEmbed()
-            .setColor("#ffc600")
+            .setColor(color)
             .setTitle(`${question}`)
             .setTimestamp()
             .setFooter(`Poll started by: ${message.author.username}`, message.author.displayAvatarURL())
@@ -91,7 +92,7 @@ export default new Command({
         return message.channel
           .send(
             new MessageEmbed()
-              .setColor("#ffc600")
+              .setColor(color)
               .setTitle(`${question} ${id}`)
               .setDescription(`${questionOptions.map((option, i) => `${options[i]} - ${option}`).join("\n")}`)
               .setFooter(`Poll started by: ${message.author.username}`, `${message.author.displayAvatarURL()}`)

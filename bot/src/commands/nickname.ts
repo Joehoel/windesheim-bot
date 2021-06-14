@@ -5,10 +5,10 @@ export default new Command({
   name: "nickname",
   description: "Change your nickname",
   aliases: ["nick"],
-  async execute(client, message, args) {
-    const { nickname } = await fetch(`http://localhost:3000/api/nickname/${message.author.id}`).then(res =>
-      res.json()
-    );
-    return message.member?.setNickname(nickname);
+  usage: "<user>",
+  async execute(_, message) {
+    const target = message.mentions.members?.first()?.id || message.author.id;
+    const { nickname } = await fetch(`http://localhost:3000/api/user/${target}`).then(res => res.json());
+    return await message.member?.setNickname(nickname);
   },
 });

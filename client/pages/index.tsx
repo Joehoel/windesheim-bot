@@ -1,12 +1,14 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { getCsrfToken, useSession } from "next-auth/client";
 import { useRouter } from "next/dist/client/router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as yup from "yup";
 import Layout from "../components/Layout";
 import Spinner from "../components/Spinner";
+import Error from "../components/Error";
+import { GetServerSideProps } from "next";
 
 type FormData = {
   firstname: string;
@@ -33,7 +35,11 @@ const emailSchema = yup.object().shape({
     .trim(),
 });
 
-const IndexPage = ({ csrfToken }) => {
+type Props = {
+  csrfToken: string;
+};
+
+const Home = ({ csrfToken }: Props) => {
   const router = useRouter();
   const [session, loading] = useSession();
 
@@ -102,9 +108,7 @@ const IndexPage = ({ csrfToken }) => {
                 placeholder="s1234567@student.windesheim.nl"
                 {...registerEmail("email")}
               />
-              <span className="font-semibold text-sm text-red-600">
-                {emailErrors.email && "Email domain must contain 'windesheim.nl'"}
-              </span>
+              <Error>{emailErrors.email && "Email domain must contain 'windesheim.nl'"}</Error>
             </div>
             <div className="flex">
               <button
@@ -139,7 +143,7 @@ const IndexPage = ({ csrfToken }) => {
               placeholder="Jan"
               {...register("firstname")}
             />
-            <span>{errors.firstname?.message}</span>
+            <Error>{errors.firstname?.message}</Error>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700" htmlFor="lastname">
@@ -154,7 +158,7 @@ const IndexPage = ({ csrfToken }) => {
               placeholder="de Boer"
               {...register("lastname")}
             />
-            <span>{errors.lastname?.message}</span>
+            <Error>{errors.lastname?.message}</Error>
           </div>
           {/* <div>
             <label className="block text-sm font-medium text-gray-700" htmlFor="email">
@@ -207,11 +211,11 @@ const IndexPage = ({ csrfToken }) => {
   );
 };
 
-export async function getServerSideProps(context) {
+export const getServerSideProps: GetServerSideProps = async context => {
   const csrfToken = await getCsrfToken(context);
   return {
     props: { csrfToken },
   };
-}
+};
 
-export default IndexPage;
+export default Home;

@@ -13,6 +13,7 @@
     "@tailwindcss/forms": "^0.3.3",
     "@typegoose/typegoose": "^7.6.1",
     "@types/mongoose": "^5.11.97",
+    "babel-plugin-transform-typescript-metadata": "^0.3.2",
     "cookies": "^0.8.0",
     "mongoose": "^5.12.13",
     "next": "latest",
@@ -27,7 +28,8 @@
     "yup": "^0.32.9"
   },
   "devDependencies": {
-    "@tailwindcss/jit": "^0.1.18",
+    "@babel/plugin-proposal-class-properties": "^7.14.5",
+    "@tailwindcss/jit": "^0.1.10",
     "@types/cookies": "^0.7.6",
     "@types/node": "^12.12.21",
     "@types/react": "^17.0.2",

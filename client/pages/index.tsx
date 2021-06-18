@@ -1,14 +1,14 @@
 import { yupResolver } from "@hookform/resolvers/yup";
+import { GetServerSideProps } from "next";
 import { getCsrfToken, useSession } from "next-auth/client";
 import { useRouter } from "next/dist/client/router";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as yup from "yup";
+import Error from "../components/Error";
 import Layout from "../components/Layout";
 import Spinner from "../components/Spinner";
-import Error from "../components/Error";
-import { GetServerSideProps } from "next";
 
 type FormData = {
   firstname: string;
@@ -160,20 +160,6 @@ const Home = ({ csrfToken }: Props) => {
             />
             <Error>{errors.lastname?.message}</Error>
           </div>
-          {/* <div>
-            <label className="block text-sm font-medium text-gray-700" htmlFor="email">
-              Email
-            </label>
-            <input
-              className="shadow-sm focus:ring-yellow-400 focus:border-yellow-400 mt-1 block w-full sm:text-sm rounded border-gray-300"
-              type="email"
-              name="email"
-              id="email"
-              autoComplete="email"
-              {...register("email")}
-            />
-            <span>{errors.email?.message}</span>
-          </div> */}
           <div>
             <label className="block text-sm font-medium text-gray-700" htmlFor="opleiding">
               Opleiding

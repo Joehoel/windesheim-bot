@@ -1,7 +1,7 @@
 import Cookies from "cookies";
 import { NextApiRequest, NextApiResponse } from "next";
 import connect from "../../middleware/mongo";
-import User, { IUser } from "../../models/User";
+import User, { IUser } from "../../models/user.model";
 
 const API_ENDPOINT = "https://discord.com/api/v8";
 
@@ -25,11 +25,11 @@ export interface IUserResponse {
 }
 
 export interface IUserData {
+  id: string;
   firstname: string;
   lastname: string;
   email: string;
   opleiding: string;
-  id: string;
   docent: boolean;
 }
 
@@ -38,7 +38,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   const { code, state } = req.query;
   if (!code) return res.status(400).json({ message: "No code given!" });
+
   const data = await exchangeCode(code);
+
   cookies.set("access_token", data.access_token, {
     httpOnly: true,
     maxAge: data.expires_in,
@@ -59,12 +61,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   return res.status(500).json({ message: "Error" });
 };
 
-const insertUser = async ({ email, firstname, lastname, opleiding, id }): Promise<IUser> => {
+const insertUser = async ({ email, firstname, lastname, opleiding, id }) => {
   const studentnummer = email.split("@")[0];
   const nickname = `${firstname} ${lastname} (${studentnummer})`;
   const docent = email.split("@")[0].match(/^s\d+$/gi) ? false : true;
 
-  const user: IUser = await User.findOneAndUpdate(
+  const user = await User.findOneAndUpdate(
     {
       id,
     },
@@ -143,13 +145,13 @@ const getDiscordUser = async (accessToken: string) => {
   const data: IUserResponse = await res.json();
   return data;
 };
-
 const updateDiscord = async (user: IUser, accessToken: string) => {
   const body = JSON.stringify({
     access_token: accessToken,
     roles: [user.opleiding, user.docent ? "851392975925280788" : "851392898317418527"],
     nick: user.nickname,
   });
+
   const headers = {
     Authorization: `Bot ${process.env.BOT_TOKEN}`,
     "Content-Type": "application/json",

@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import connect from "../../../middleware/mongo";
-import User from "../../../models/User";
+import User from "../../../models/user.model";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const id = req.query.id as string;

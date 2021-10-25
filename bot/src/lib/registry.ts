@@ -4,28 +4,29 @@ import Event from "../lib/Event";
 import { read } from "./read";
 
 export async function registerCommands(client: Client, dir = "") {
-  const commands = await read<Command>(dir);
+    const commands = await read<Command>(dir);
 
-  for (const command of commands) {
-    // Register command
-    client.commands.set(command.name, command);
+    for (const command of commands) {
+        // Register command
+        client.commands.set(command.name, command);
 
-    // Register all command aliases
-    if (!command.aliases) return;
-    command.aliases.forEach((alias: string) => {
-      client.aliases.set(alias, command.name);
-    });
-  }
+        // Register all command aliases
+        if (!command.aliases) return;
+        command.aliases.forEach((alias: string) => {
+            client.aliases.set(alias, command.name);
+        });
+    }
 }
 
 export async function registerEvents(client: Client, dir = "") {
-  const events = await read<Event>(dir);
-  for (const event of events) {
-    client.events.set(event.name, event);
-    try {
-      client.on(event.name, event.run.bind(event, client));
-    } catch (error) {
-      client.logger.error(error);
+    const events = await read<Event>(dir);
+    for (const event of events) {
+        client.events.set(event.name, event);
+        try {
+            client.on(event.name, event.run.bind(event, client));
+            client.logger.info(`'${event.name}' event registered`);
+        } catch (error) {
+            client.logger.error(error);
+        }
     }
-  }
 }

@@ -8,7 +8,7 @@ export default new Command({
   permissions: ["MANAGE_MESSAGES"],
   aliases: ["s"],
   async execute(_, message, args) {
-    await message.delete({ timeout: 1000 });
+    await message.delete();
     return message.channel.send(args.join(" "));
   },
 });

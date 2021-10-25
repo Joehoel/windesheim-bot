@@ -1,4 +1,5 @@
 import { Client, Message } from "discord.js";
+import Command from "../lib/Command";
 import { prefix } from "../../config.json";
 
 export default async (client: Client, message: Message) => {
@@ -20,17 +21,17 @@ export default async (client: Client, message: Message) => {
   }
 
   // Get command from collection
-  const command = client.commands.get(commandName)! || client.commands.get(client.aliases.get(commandName)!);
+  const command: Command = client.commands.get(commandName)! || client.commands.get(client.aliases.get(commandName)!);
 
   if (command.channels?.length! > 0 && !command.channels?.includes(message.channel.id)) {
     const msg = await message.channel.send(`Sorry, ${message.author}! You can't use that command here.`);
-    await message.delete({ timeout: 10 * 1000 });
-    await msg.delete({ timeout: 10 });
+    await message.delete();
+    await msg.delete();
     return;
   }
 
   // Check if user is admin for command
-  if (command.admin && !message.member!.hasPermission("ADMINISTRATOR")) {
+  if (command.admin && !message.member!.permissions.has("ADMINISTRATOR")) {
     await message.channel.send(`Sorry, ${message.author}! You must be an admin to execute this command.`);
     return;
   }
@@ -42,7 +43,7 @@ export default async (client: Client, message: Message) => {
   }
 
   // Check if user has the correct permissions te execute command
-  if (command.permissions.some(permission => !message.member!.hasPermission(permission))) {
+  if (command.permissions.some(permission => !message.member!.permissions.has(permission))) {
     await message.channel.send(`Sorry, ${message.author}! You are not allowed to execute that command.`);
     return;
   }

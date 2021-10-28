@@ -19,7 +19,7 @@ export async function registerCommands(client: Client, dir = "") {
 }
 
 export async function registerEvents(client: Client, dir = "") {
-    const events = await read<Event>(dir);
+    const events = await read<Event<any>>(dir);
     for (const event of events) {
         client.events.set(event.name, event);
         try {

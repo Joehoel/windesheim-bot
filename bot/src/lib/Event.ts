@@ -1,11 +1,11 @@
 import { Client, ClientEvents } from "discord.js";
 
-export default class Event {
-  public name: keyof ClientEvents;
-  run: (client: Client, ...args: any) => Promise<void>;
+export default class Event<T extends keyof ClientEvents> {
+    public name: T;
+    public run: (client: Client, ...args: ClientEvents[T]) => Promise<void>;
 
-  constructor({ name, run }: { name: keyof ClientEvents; run: (client: Client, ...args: any) => Promise<void> }) {
-    this.name = name;
-    this.run = run;
-  }
+    constructor({ name, run }: { name: T; run: (client: Client, ...args: ClientEvents[T]) => Promise<void> }) {
+        this.name = name;
+        this.run = run;
+    }
 }

@@ -3,7 +3,7 @@ import Event from "../lib/Event";
 
 export default new Event({
     name: "voiceStateUpdate",
-    async run(client: Client, oldState: VoiceState, newState: VoiceState) {
+    async run(client, oldState, newState) {
         console.log("Joined VC");
     },
 });

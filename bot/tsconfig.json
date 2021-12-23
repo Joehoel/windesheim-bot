@@ -5,11 +5,15 @@
         "target": "ES2015",
         "sourceMap": true,
         "outDir": "./dist",
-        // "baseUrl": "./src",
+        "baseUrl": "./src",
         // "rootDir": "./src",
         "moduleResolution": "node",
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
+        "forceConsistentCasingInFileNames": true,
+        "importHelpers": true,
+        "strict": true,
+        "removeComments": true,
         "noImplicitAny": true,
         "strictNullChecks": true,
         "alwaysStrict": true,
@@ -19,7 +23,13 @@
         "typeRoots": ["./src/typings", "node_modules/@types"],
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
-        "resolveJsonModule": true
+        "resolveJsonModule": true,
+        "paths": {
+            "config": ["../config.json"],
+            "helpers": ["lib/helpers.ts"],
+            "contants": ["lib/constants.ts"],
+            "lib/*": ["lib/*"]
+        }
     },
     "exclude": ["node_modules"]
 }

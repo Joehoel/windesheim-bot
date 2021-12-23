@@ -1,23 +1,26 @@
-import { getModelForClass, prop } from "@typegoose/typegoose";
+import { getModelForClass, prop, Severity } from "@typegoose/typegoose";
 
 class Group {
     @prop()
-    public name: string;
+    public name!: string;
 
     @prop()
-    public owner: string;
+    public owner!: string;
 
     @prop()
-    public voice: string;
+    public voice!: string;
 
     @prop()
-    public text: string;
+    public text!: string;
+
+    @prop()
+    public category!: string;
 
     @prop({ default: true })
     public locked?: boolean;
 
-    @prop()
-    public members: string[];
+    @prop({ options: { allowMixed: Severity.ALLOW } })
+    public members!: string[];
 }
 
 export default getModelForClass(Group);

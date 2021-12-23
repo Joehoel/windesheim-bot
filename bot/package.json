@@ -6,6 +6,7 @@
     "scripts": {
         "dev": "nodemon --files src/index.ts",
         "build": "tsc",
+        "start": "npm run build && node dist/index.js",
         "gen-env-types": "gen-env-types .env -o src/typings/env.d.ts -e ."
     },
     "keywords": [],
@@ -27,6 +28,7 @@
         "discord.js": "^13.1.0",
         "dotenv": "^10.0.0",
         "mongoose": "^6.0.12",
-        "node-fetch": "^2.6.1"
+        "node-fetch": "^2.6.1",
+        "tslib": "^2.3.1"
     }
 }

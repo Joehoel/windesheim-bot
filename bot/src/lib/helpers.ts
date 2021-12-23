@@ -1,5 +1,5 @@
-import { Guild, HexColorString, MessageEmbed, MessageEmbedOptions, Permissions } from "discord.js";
-import { color } from "../../config.json";
+import { Client, Guild, HexColorString, MessageEmbed, MessageEmbedOptions, Permissions } from "discord.js";
+import { color } from "config";
 import Group from "../models/Group";
 
 const COLOR = color as HexColorString;
@@ -19,16 +19,19 @@ export async function getGroup({ guild, owner }: { guild: Guild; owner: string }
         return {
             channels: null,
             group: null,
+            category: null,
         };
     }
 
     const text = await guild.channels.fetch(group.text);
     const voice = await guild.channels.fetch(group.voice);
+    const category = await guild.channels.fetch(group.category);
 
     return {
         channels: {
             text,
             voice,
+            category,
         },
         group,
     };
@@ -41,8 +44,10 @@ export async function createGroup({ name, owner, guild }: { name: string; owner:
             {
                 id: owner,
                 type: "member",
-                allow: ["MANAGE_CHANNELS"],
+                allow: [Permissions.FLAGS.VIEW_CHANNEL],
             },
+            { id: "850652458678353920", type: "member", allow: [Permissions.FLAGS.VIEW_CHANNEL] },
+            { id: guild.roles.everyone, type: "role", deny: [Permissions.FLAGS.VIEW_CHANNEL] },
         ],
     });
 
@@ -50,12 +55,13 @@ export async function createGroup({ name, owner, guild }: { name: string; owner:
         type: "GUILD_TEXT",
         parent: category,
         permissionOverwrites: [
-            // {
-            //     id: guild.roles.everyone,
-            //     deny: ["READ_MESSAGE_HISTORY", "SEND_MESSAGES", "ADD_REACTIONS"],
-            //     type: "role",
-            // },
-            { id: owner, allow: ["MANAGE_CHANNELS"], type: "member" },
+            {
+                id: owner,
+                type: "member",
+                allow: [Permissions.FLAGS.VIEW_CHANNEL],
+            },
+            { id: "850652458678353920", type: "member", allow: [Permissions.FLAGS.VIEW_CHANNEL] },
+            { id: guild.roles.everyone, type: "role", deny: [Permissions.FLAGS.VIEW_CHANNEL] },
         ],
     });
 
@@ -64,17 +70,18 @@ export async function createGroup({ name, owner, guild }: { name: string; owner:
         parent: category,
         permissionOverwrites: [
             {
-                id: guild.roles.everyone,
-                type: "role",
-                deny: "CONNECT",
+                id: owner,
+                type: "member",
+                allow: [Permissions.FLAGS.VIEW_CHANNEL],
             },
-            { id: owner, allow: "SPEAK", type: "member" },
+            { id: "850652458678353920", type: "member", allow: [Permissions.FLAGS.VIEW_CHANNEL] },
+            { id: guild.roles.everyone, type: "role", deny: [Permissions.FLAGS.VIEW_CHANNEL] },
         ],
     });
-    await Group.create({ name, owner, voice: voice.id, text: text.id });
+    await Group.create({ name, owner, voice: voice.id, text: text.id, category: category.id });
 
     return {
-        channels: { text, voice },
+        channels: { text, voice, category },
         name,
         owner,
         category,

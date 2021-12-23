@@ -13,7 +13,7 @@ const client = new Client({
 
 client.commands = new Collection<string, Command>();
 client.aliases = new Collection<string, string>();
-client.events = new Collection<string, Event>();
+client.events = new Collection<string, Event<any>>();
 client.logger = consola;
 
 (async () => {
